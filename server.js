@@ -52,33 +52,9 @@ app.get("/listings", async (req, res) => {
     }
 })
 
-//////---------------** Test **---------------//////
-async function testRelationships() {
-    try {
-        // Step 3: Query without populate (owner and category will only be ID strings)
-        const unpopulatedListings = await Listing.find()
-        console.log('--- WITHOUT POPULATE ---')
-        console.log(unpopulatedListings)
-
-        // Step 4: Query with populate (replaces IDs with full documents)
-        const populatedListings = await Listing.find()
-            .populate('owner')
-            .populate('category')
-
-        console.log('--- WITH POPULATE ---')
-        console.log(populatedListings)
-    } catch (error) {
-        console.log('Error fetching listings:', error)
-    }
-}
-
-testRelationships()
-
-///////////////////////////////////
-
-
 
 
 app.listen(3000, () => {
     console.log("Listening on port " + 3000)
 }) // Listen on port 3000
+
