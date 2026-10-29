@@ -20,6 +20,47 @@ app.use(methodOverride('_method'))
 app.use(morgan('dev'))
 
 
+
+// ==========================================
+// TEMPORARY SEED FUNCTION 
+// ==========================================
+async function seedData() {
+    try {
+        const user = await User.findOneAndUpdate(
+            { username: 'zaid' },
+            { username: 'zaid', password: '1234' },
+            { upsert: true, new: true }
+        )
+
+        
+        const category = await Category.findOneAndUpdate(
+            { categoryName: 'Apartment' },
+            { categoryName: 'Apartment' },
+            { upsert: true, new: true }
+        )
+
+        
+        const existingListing = await Listing.findOne({ streetAddress: 'Road 12', owner: user._id })
+
+        if (!existingListing) {
+            await Listing.create({
+                streetAddress: 'Road 12',
+                city: 'Manama',
+                price: 80,
+                size: 120,
+                owner: user._id,
+                category: category._id
+            })
+            console.log('--- Test Data Seeded Successfully! ---')
+        }
+    } catch (error) {
+        console.log('Seed failed:', error.message)
+    }
+}
+// ========================================================================
+
+
+
 async function connectToDB() { // connection to the database
     try {
         await mongoose.connect(process.env.MONGODB_URI)
@@ -51,7 +92,6 @@ app.get("/listings", async (req, res) => {
         res.status(500).send("Something went wrong.")
     }
 })
-
 
 
 app.listen(3000, () => {
